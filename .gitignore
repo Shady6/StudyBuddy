@@ -1,63 +1,65 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 # FRONT END
 # dependencies
-/stud-bud-front/node_modules
-/stud-bud-front/.pnp
-/stud-bud-front/.pnp.js
+/Client/node_modules
+/Client/.pnp
+/Client/.pnp.js
 
 # testing
-/stud-bud-front/coverage
+/Client/coverage
 
 # production
-/stud-bud-front/build
+/Client/build
 
 # misc
-/stud-bud-front/.DS_Store
-/stud-bud-front/.env.local
-/stud-bud-front/.env.development.local
-/stud-bud-front/.env.test.local
-/stud-bud-front/.env.production.local
+/Client/.DS_Store
+/Client/.env.local
+/Client/.env.development.local
+/Client/.env.test.local
+/Client/.env.production.local
 
-/stud-bud-front/npm-debug.log*
-/stud-bud-front/yarn-debug.log*
-/stud-bud-front/yarn-error.log*
+/Client/npm-debug.log*
+/Client/yarn-debug.log*
+/Client/yarn-error.log*
 
 
 #BACK END
-/stud-bud-back/*.swp
-/stud-bud-back/*.*~
-/stud-bud-back/project.lock.json
-/stud-bud-back/.DS_Store
-/stud-bud-back/*.pyc
-/stud-bud-back/nupkg/
+*.swp
+*.*~
+project.lock.json
+.DS_Store
+*.pyc
+nupkg/
 
 # Visual Studio Code
-/stud-bud-back/.vscode
+.vscode
 
 # Rider
-/stud-bud-back/.idea
+.idea
 
 # User-specific files
-/stud-bud-back/*.suo
-/stud-bud-back/*.user
-/stud-bud-back/*.userosscache
-/stud-bud-back/*.sln.docstates
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
 
 # Build results
-/stud-bud-back/[Dd]ebug/
-/stud-bud-back/[Dd]ebugPublic/
-/stud-bud-back/[Rr]elease/
-/stud-bud-back/[Rr]eleases/
-/stud-bud-back/x64/
-/stud-bud-back/x86/
-/stud-bud-back/build/
-/stud-bud-back/bld/
-/stud-bud-back/[Bb]in/
-/stud-bud-back/[Oo]bj/
-/stud-bud-back/[Oo]ut/
-/stud-bud-back/msbuild.log
-/stud-bud-back/msbuild.err
-/stud-bud-back/msbuild.wrn
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+build/
+bld/
+[Bb]in/
+[Oo]bj/
+[Oo]ut/
+msbuild.log
+msbuild.err
+msbuild.wrn
 
 # Visual Studio
 /.vs
+
+appsettings.json

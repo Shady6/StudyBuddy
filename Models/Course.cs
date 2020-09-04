@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace stud_bud_back.Models
 {
-	public class Group
+	public class Course
 	{
 		[Key]
 		public int Id { get; set; }
-		public List<User> Students { get; set; }
-		public List<Assignment> Assignments{ get; set; }
+		public string Name { get; set; }
+		public string AdjunctName { get; set; }
 	}
 }

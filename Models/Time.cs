@@ -7,21 +7,13 @@ namespace stud_bud_back.Models
 {
 	public class Time
 	{
+		private int hours;
+		private int minutes;
+
 		public Time(int hours, int minutes)
 		{
-
-		}
-
-		private int hours;
-
-		private int minutes { get; set; }
-
-
-		public override string ToString()
-		{
-			return String.Format(
-				"{0:00}:{1:00}",
-				this.hours, this.minutes);
+			setHours(hours);
+			setMinutes(minutes);
 		}
 
 		public void setHours(int hours)
@@ -42,5 +34,12 @@ namespace stud_bud_back.Models
 
 		public int getHours() { return hours; }
 		public int getMinutes() { return minutes; }
+
+		public override string ToString()
+		{
+			return String.Format(
+				"{0:00}:{1:00}",
+				this.hours, this.minutes);
+		}
 	}
 }
