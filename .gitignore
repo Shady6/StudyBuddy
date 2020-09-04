@@ -1,0 +1,63 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# FRONT END
+# dependencies
+/stud-bud-front/node_modules
+/stud-bud-front/.pnp
+/stud-bud-front/.pnp.js
+
+# testing
+/stud-bud-front/coverage
+
+# production
+/stud-bud-front/build
+
+# misc
+/stud-bud-front/.DS_Store
+/stud-bud-front/.env.local
+/stud-bud-front/.env.development.local
+/stud-bud-front/.env.test.local
+/stud-bud-front/.env.production.local
+
+/stud-bud-front/npm-debug.log*
+/stud-bud-front/yarn-debug.log*
+/stud-bud-front/yarn-error.log*
+
+
+#BACK END
+/stud-bud-back/*.swp
+/stud-bud-back/*.*~
+/stud-bud-back/project.lock.json
+/stud-bud-back/.DS_Store
+/stud-bud-back/*.pyc
+/stud-bud-back/nupkg/
+
+# Visual Studio Code
+/stud-bud-back/.vscode
+
+# Rider
+/stud-bud-back/.idea
+
+# User-specific files
+/stud-bud-back/*.suo
+/stud-bud-back/*.user
+/stud-bud-back/*.userosscache
+/stud-bud-back/*.sln.docstates
+
+# Build results
+/stud-bud-back/[Dd]ebug/
+/stud-bud-back/[Dd]ebugPublic/
+/stud-bud-back/[Rr]elease/
+/stud-bud-back/[Rr]eleases/
+/stud-bud-back/x64/
+/stud-bud-back/x86/
+/stud-bud-back/build/
+/stud-bud-back/bld/
+/stud-bud-back/[Bb]in/
+/stud-bud-back/[Oo]bj/
+/stud-bud-back/[Oo]ut/
+/stud-bud-back/msbuild.log
+/stud-bud-back/msbuild.err
+/stud-bud-back/msbuild.wrn
+
+# Visual Studio
+/.vs
