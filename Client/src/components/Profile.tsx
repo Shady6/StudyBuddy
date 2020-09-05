@@ -1,11 +1,31 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Container, Row, Col } from "reactstrap";
 
 import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
 import Loading from "./Loading";
+import axios from "axios"
+
+interface weather{
+  date: Date
+  temperatureC: number
+  summary: string
+
+}
 
 export const ProfileComponent = () => {
-  const { user } = useAuth0();
+  const { user, getAccessTokenSilently } = useAuth0();
+
+  useEffect(() => {
+    const loadWeather = async () => {
+      const token = await getAccessTokenSilently()
+      const res = await axios.get("https://localhost:44377/api/weatherforecast", {
+        headers: {Accept: "*/*", Authorization: `Bearer ${token}`}
+      })
+      console.log(res.data as weather[])
+    } 
+
+    loadWeather()
+  }, []);
 
   return (
     <Container className="mb-5">
@@ -22,9 +42,7 @@ export const ProfileComponent = () => {
           <p className="lead text-muted">{user.email}</p>
         </Col>
       </Row>
-      <Row>
-        {JSON.stringify(user, null, 2)}
-      </Row>
+      <Row>{JSON.stringify(user, null, 2)}</Row>
     </Container>
   );
 };

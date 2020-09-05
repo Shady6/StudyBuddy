@@ -6,6 +6,7 @@ import config from "../auth_config.json";
 const Auth0ProviderWithHistory: React.FC = ({ children }) => {
   const domain = config.domain
   const clientId = config.clientId
+  const audience = config.audience
 
   const history = useHistory();
 
@@ -18,6 +19,7 @@ const Auth0ProviderWithHistory: React.FC = ({ children }) => {
       domain={domain}
       clientId={clientId}
       redirectUri={window.location.origin}
+      audience={audience}
       onRedirectCallback={onRedirectCallback}
     >
       {children}

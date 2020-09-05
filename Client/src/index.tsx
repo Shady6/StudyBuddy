@@ -7,12 +7,12 @@ import { BrowserRouter } from "react-router-dom";
 import Auth0ProviderWithHistory from "./components/Auth0ProviderWithHistory";
 
 ReactDOM.render(
-  <BrowserRouter>
-    <Auth0ProviderWithHistory>
-      <App />
-    </Auth0ProviderWithHistory>
-  </BrowserRouter>,
-  document.getElementById("root")
+	<BrowserRouter>
+		<Auth0ProviderWithHistory>
+			<App />
+		</Auth0ProviderWithHistory>
+	</BrowserRouter>,
+	document.getElementById("root")
 );
 
 // If you want your app to work offline and load faster, you can change
