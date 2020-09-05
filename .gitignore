@@ -63,3 +63,4 @@ msbuild.wrn
 /.vs
 
 appsettings.json
+/Client/src/auth_config.json
