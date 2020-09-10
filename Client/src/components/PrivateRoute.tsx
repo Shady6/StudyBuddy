@@ -8,7 +8,7 @@ interface PrivateRouteProps{
 }
 
 const PrivateRoute: React.FC<PrivateRouteProps> = ({ component: Component, path, ...rest }) => {
-  const { isLoading, isAuthenticated, loginWithRedirect } = useAuth0();
+  const { isLoading, isAuthenticated, loginWithRedirect, getIdTokenClaims } = useAuth0();
 
   useEffect(() => {
     if (isLoading || isAuthenticated) {
@@ -21,6 +21,8 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ component: Component, path,
     };
     fn();
   }, [isLoading, isAuthenticated, loginWithRedirect, path]);
+
+  console.log(getIdTokenClaims())
 
   const render = (props: any) =>
     !isLoading && isAuthenticated === true ? (

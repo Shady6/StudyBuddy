@@ -1,4 +1,5 @@
-﻿using System;
+﻿using stud_bud_back.Entities;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;

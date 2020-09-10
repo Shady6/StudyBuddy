@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Container, Row, Col } from "reactstrap";
 
-import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
+import { useAuth0, withAuthenticationRequired,  } from "@auth0/auth0-react";
 import Loading from "./Loading";
 import axios from "axios"
 
@@ -13,19 +13,22 @@ interface weather{
 }
 
 export const ProfileComponent = () => {
-  const { user, getAccessTokenSilently } = useAuth0();
+  const { user, getAccessTokenSilently, getIdTokenClaims } = useAuth0();
 
   useEffect(() => {
     const loadWeather = async () => {
+      const idToken = await getIdTokenClaims()
       const token = await getAccessTokenSilently()
       const res = await axios.get("https://localhost:44377/api/weatherforecast", {
         headers: {Accept: "*/*", Authorization: `Bearer ${token}`}
       })
+      console.log(idToken)
       console.log(res.data as weather[])
     } 
 
     loadWeather()
   }, []);
+
 
   return (
     <Container className="mb-5">
