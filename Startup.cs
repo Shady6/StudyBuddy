@@ -46,9 +46,7 @@ namespace stud_bud_back
 			services.AddCors();
 			services.AddControllers();
 			services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
-			
-
+	
 			var appSettingsSection = _configuration.GetSection("AppSettings");
 			services.Configure<AppSettings>(appSettingsSection);
 

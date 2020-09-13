@@ -1,5 +1,5 @@
 
-const authReducer = (state, action) => {
+const userReducer = (state, action) => {
     switch (key) {
         case value:
             
@@ -10,4 +10,4 @@ const authReducer = (state, action) => {
     }
 }
 
-export default authReducer;
+export default userReducer;
