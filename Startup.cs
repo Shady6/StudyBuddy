@@ -36,10 +36,8 @@ namespace stud_bud_back
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
-			if (_env.IsProduction())
-				services.AddDbContext<DataContext>();
-			else
-				services.AddDbContext<DataContext, SqliteDataContext>();
+			services.AddDbContext<DataContext>(options =>
+			options.UseSqlServer(_configuration.GetConnectionString("DefaultConnection")));
 
 			services.AddCors();
 			services.AddControllers();
@@ -82,21 +80,22 @@ namespace stud_bud_back
 					};
 				});
 
+			services.AddScoped<ITokenService, TokenService>();
 			services.AddScoped<IUserService, UserService>();
+			services.AddScoped<ICohortService, CohortService>();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DataContext dataContext)
 		{
-			dataContext.Database.Migrate();
-
 			app.UseRouting();
 
 			app.UseCors(options =>
-			options.WithOrigins("http://localhost:3000").
+			options.AllowAnyOrigin().
+			//options.WithOrigins("http://localhost:3000").
 			AllowAnyHeader().
-			AllowAnyMethod());			
-			
+			AllowAnyMethod());
+
 			app.UseAuthentication();
 			app.UseAuthorization();
 

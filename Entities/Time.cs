@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace stud_bud_back.Models
+namespace stud_bud_back.Entities
 {
 	public class Time
 	{

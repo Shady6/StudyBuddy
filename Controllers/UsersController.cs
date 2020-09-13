@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using stud_bud_back.Entities;
 using stud_bud_back.Helpers;
@@ -23,45 +24,36 @@ namespace stud_bud_back.Controllers
 	[Authorize]
 	[Route("[controller]")]
 	[ApiController]
-	public class UserController : ControllerBase
+	public class UsersController : ControllerBase
 	{
 		private IUserService _userService;
+		private ITokenService _tokenService;
 		private IMapper _mapper;
 		private readonly AppSettings _appSettings;
 
-		public UserController(IUserService userService, IMapper mapper, AppSettings appSettings)
+		public UsersController(ITokenService tokenService, IUserService userService, IMapper mapper, IOptions<AppSettings> appSettings)
 		{
+			_tokenService = tokenService;
 			_userService = userService;
 			_mapper = mapper;
-			_appSettings = appSettings;
+			_appSettings = appSettings.Value;
 		}
 
 		[AllowAnonymous]
 		[HttpPost("authenticate")]
 		public IActionResult Authenticate([FromBody]AuthenticateModel model)
 		{
-			var user = _userService.Authenticate(model.Username, model.Password);
+			var user = _userService.Authenticate(model.Email, model.Password);
 
 			if (user == null)
 				return BadRequest(new { message = "Username or password is incorrect" });
 
-			var tokenHandler = new JwtSecurityTokenHandler();
-			var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
-			var tokenDescriptor = new SecurityTokenDescriptor
-			{
-				Subject = new ClaimsIdentity(new Claim[] {
-					new Claim(ClaimTypes.Name, user.Id.ToString())
-				}),
-				Expires = DateTime.UtcNow.AddDays(7),
-				SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-			};
-			var token = tokenHandler.CreateToken(tokenDescriptor);
-			var tokenString = tokenHandler.WriteToken(token);
+			string tokenString = _tokenService.CreateJWTokenForUser(user);
 
 			return Ok(new
 			{
 				Id = user.Id,
-				Username = user.Username,
+				Username = user.Email,
 				FirstName = user.FirstName,
 				LastName = user.LastName,
 				Token = tokenString,
@@ -104,25 +96,29 @@ namespace stud_bud_back.Controllers
 		[HttpPut("{id}")]
 		public IActionResult Update(int id, [FromBody]UpdateModel model)
 		{
-			var user = _mapper.Map<User>(model);
-			user.Id = id;
-
-			try
+			if (int.Parse(User.Identity.Name) == id)
 			{
+				var user = _mapper.Map<User>(model);
+				user.Id = id;
+
 				_userService.Update(user, model.Password);
 				return Ok();
 			}
-			catch (AppException ex)
-			{
-				return BadRequest(new { message = ex.Message });
-			}
+			else
+				return BadRequest(new { message = "Something went wrong" });
 		}
 
 		[HttpDelete("{id}")]
 		public IActionResult Delete(int id)
 		{
-			_userService.Delete(id);
-			return Ok();
+
+			if (int.Parse(User.Identity.Name) == id)
+			{
+				_userService.Delete(id);
+				return Ok();
+			}
+			else
+				return BadRequest(new { message = "Something went wrong" });
 		}
 	}
 }
