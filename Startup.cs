@@ -18,6 +18,10 @@ using stud_bud_back.Helpers;
 using stud_bud_back.Services;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
+using stud_bud_back.Configuration;
+using Microsoft.OpenApi.Models;
+using Microsoft.Extensions.Options;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace stud_bud_back
 {
@@ -37,11 +41,13 @@ namespace stud_bud_back
 		public void ConfigureServices(IServiceCollection services)
 		{
 			services.AddDbContext<DataContext>(options =>
-			options.UseSqlServer(_configuration.GetConnectionString("DefaultConnection")));
+			options.UseSqlServer(_configuration.GetConnectionString("DefaultConnection")));			
 
 			services.AddCors();
 			services.AddControllers();
 			services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+			
 
 			var appSettingsSection = _configuration.GetSection("AppSettings");
 			services.Configure<AppSettings>(appSettingsSection);
@@ -80,14 +86,28 @@ namespace stud_bud_back
 					};
 				});
 
+			services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
+			services.AddSwaggerGen();
+
 			services.AddScoped<ITokenService, TokenService>();
 			services.AddScoped<IUserService, UserService>();
-			services.AddScoped<ICohortService, CohortService>();
+			services.AddScoped<ICohortService, CohortService>();			
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DataContext dataContext)
 		{
+			var swaggerOptions = new SwaggerOptions();
+			_configuration.GetSection(nameof(SwaggerOptions)).Bind(swaggerOptions);
+			app.UseSwagger(options =>
+			{
+				options.RouteTemplate = swaggerOptions.JsonRoute;
+			});
+			app.UseSwaggerUI(options =>
+			{
+				options.SwaggerEndpoint(swaggerOptions.UIEndpoint, swaggerOptions.Description);
+			});
+
 			app.UseRouting();
 
 			app.UseCors(options =>
