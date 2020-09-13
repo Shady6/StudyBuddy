@@ -1,13 +1,14 @@
 
-const userReducer = (state, action) => {
-    switch (key) {
-        case value:
+// const userReducer = (state, action) => {
+//     switch (key) {
+//         case value:
             
-            break;
+//             break;
     
-        default:
-            break;
-    }
-}
+//         default:
+//             break;
+//     }
+// }
 
-export default userReducer;
+// export default userReducer;
+export default 3;
