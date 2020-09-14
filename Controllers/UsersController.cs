@@ -73,7 +73,7 @@ namespace stud_bud_back.Controllers
 			}
 			catch (AppException ex)
 			{
-				return BadRequest(new { message = ex.Message });
+				return BadRequest(new { errors = new { message = ex.Message } } );
 			}
 		}
 

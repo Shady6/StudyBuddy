@@ -1,36 +1,38 @@
 import {
   RegisterDispatchTypes,
+  RegisterValidationErrors,
   REGISTER_FAILURE,
   REGISTER_REQUEST,
   REGISTER_SUCCESS,
 } from "../actions/user/RegisterActionTypes";
 
-interface RegisterState {
+export interface RegisterState {
   registering: boolean;
-  errors: any;
+  errors: RegisterValidationErrors;
   failiure: boolean;
   success: boolean;
 }
 
-const DefaultRegistrationState: RegisterState = {
+const DefaultRegisterState: RegisterState = {
   registering: false,
-  errors: [],
+  errors: {},
   failiure: false,
   success: false,
 };
 
+
 const registerReducer = (
-  state: RegisterState = DefaultRegistrationState,
+  state: RegisterState = DefaultRegisterState,
   action: RegisterDispatchTypes
 ): RegisterState => {
   switch (action.type) {
     case REGISTER_REQUEST:
-      return { ...DefaultRegistrationState, registering: true };
+      return { ...DefaultRegisterState, registering: true };
     case REGISTER_SUCCESS:
-      return { ...DefaultRegistrationState, success: true };
+      return { ...DefaultRegisterState, success: true };
     case REGISTER_FAILURE:
       return {
-        ...DefaultRegistrationState,
+        ...DefaultRegisterState,
         failiure: true,
         errors: action.payload,
       };

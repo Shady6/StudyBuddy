@@ -5,6 +5,15 @@ export interface UpdateModel {
   Password: string;
 }
 
+export interface UserModel{
+  id: number;
+  FirstName: string;
+  LastName: string;
+  Email: string;
+  Password: string;
+  Token: string
+}
+
 export interface AuthenticationData {
   Bearer: string;
   Id: number;
