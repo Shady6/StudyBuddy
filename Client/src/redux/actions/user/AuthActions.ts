@@ -1,7 +1,10 @@
 import Axios, { AxiosError, AxiosResponse } from "axios";
 import { Dispatch } from "redux";
+import { handleAxiosError } from "../../../helpers/ErrorHelper";
+import userService from "../../../services/UserService";
 import {
   LoginDispatchTypes,
+  LoginFailure,
   LoginModel,
   LoginValidationErrors,
   LOGIN_FAILURE,
@@ -16,10 +19,8 @@ export const Login = (loginModel: LoginModel) => async (
 ) => {
   dispatch({ type: LOGIN_REQUEST });
   try {
-    const res: AxiosResponse<UserModel> = await Axios.post(
-      "https://localhost:44377/Users/authenticate",
-      loginModel,
-      { headers: { "Content-Type": "application/json" } }
+    const res: AxiosResponse<UserModel> = await userService.loginUser(
+      loginModel
     );
     localStorage.setItem("user", JSON.stringify(res.data));
     dispatch({
@@ -27,15 +28,12 @@ export const Login = (loginModel: LoginModel) => async (
       payload: res.data,
     });
   } catch (ex) {
-    const axiosError: AxiosError<{
-      errors: LoginValidationErrors;
-    }> = ex as AxiosError<{ errors: LoginValidationErrors }>;
-    if (axiosError && axiosError.response) {
-      dispatch({
+    handleAxiosError<LoginValidationErrors, LoginFailure>(ex, (error) => {
+      return dispatch({
         type: LOGIN_FAILURE,
-        payload: axiosError.response.data.errors,
+        payload: error,
       });
-    }
+    });
   }
 };
 

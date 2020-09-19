@@ -1,5 +1,6 @@
-import Axios, { AxiosError } from "axios";
 import { Dispatch } from "redux";
+import { handleAxiosError } from "../../../helpers/ErrorHelper";
+import userService from "../../../services/UserService";
 import {
   RegisterModel,
   RegisterDispatchTypes,
@@ -7,6 +8,7 @@ import {
   REGISTER_SUCCESS,
   REGISTER_FAILURE,
   RegisterValidationErrors,
+  RegisterFailure,
 } from "./RegisterActionTypes";
 
 export const Register = (registerModel: RegisterModel) => async (
@@ -14,23 +16,16 @@ export const Register = (registerModel: RegisterModel) => async (
 ) => {
   dispatch({ type: REGISTER_REQUEST });
   try {
-    const res = await Axios.post(
-      "https://localhost:44377/Users/register",
-      registerModel,
-      { headers: { "Content-Type": "application/json" } }
-    );
+    await userService.registerUser(registerModel);
     dispatch({
       type: REGISTER_SUCCESS,
     });
   } catch (ex) {
-    const axiosError: AxiosError<{
-      errors: RegisterValidationErrors;
-    }> = ex as AxiosError<{ errors: RegisterValidationErrors }>;
-    if (axiosError && axiosError.response) {
-      dispatch({
+    handleAxiosError<RegisterValidationErrors, RegisterFailure>(ex, (error) => {
+      return dispatch({
         type: REGISTER_FAILURE,
-        payload: axiosError.response.data.errors,
+        payload: error,
       });
-    }
+    });
   }
 };
