@@ -15,7 +15,7 @@ using stud_bud_back.Services;
 namespace stud_bud_back.Controllers
 {
     [Authorize]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class CohortsController : ControllerBase
     {

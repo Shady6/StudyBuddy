@@ -73,7 +73,7 @@ namespace stud_bud_back.Controllers
 			}
 			catch (AppException ex)
 			{
-				return BadRequest(new { errors = new { message = ex.Message } } );
+				return BadRequest(new { errors = new { message = ex.Message } });
 			}
 		}
 
@@ -96,29 +96,18 @@ namespace stud_bud_back.Controllers
 		[HttpPut("{id}")]
 		public IActionResult Update(int id, [FromBody]UpdateModel model)
 		{
-			if (int.Parse(User.Identity.Name) == id)
-			{
 				var user = _mapper.Map<User>(model);
-				user.Id = id;
+				user.Id = int.Parse(User.Identity.Name);
 
 				_userService.Update(user, model.Password);
 				return Ok();
-			}
-			else
-				return BadRequest(new { message = "Something went wrong" });
 		}
 
-		[HttpDelete("{id}")]
-		public IActionResult Delete(int id)
+		[HttpDelete]
+		public IActionResult Delete()
 		{
-
-			if (int.Parse(User.Identity.Name) == id)
-			{
-				_userService.Delete(id);
-				return Ok();
-			}
-			else
-				return BadRequest(new { message = "Something went wrong" });
+			_userService.Delete(int.Parse(User.Identity.Name));
+			return Ok();
 		}
 	}
 }

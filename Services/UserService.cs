@@ -7,23 +7,21 @@ using stud_bud_back.Helpers;
 
 namespace stud_bud_back.Services
 {
-	public interface IUserService
+	public interface IUserService : IService<User>
 	{
 		User Authenticate(string username, string password);
-		IEnumerable<User> GetAll();
-		User GetById(int id);
-		User Create(User user, string password);
-		void Update(User user, string password = null);
-		void Delete(int id);
+		Task<User> Create(User user, string password);
+		Task<User> Update(User user, string password = null);
+
 	}
 
-	public class UserService : IUserService
+	public class UserService : Service<User>, IUserService
 	{
 		private DataContext _context;
 
-		public UserService(DataContext context)
+		public UserService(DataContext context) : base(context)
 		{
-			_context = context;
+			
 		}
 
 		public User Authenticate(string email, string password)
@@ -42,7 +40,7 @@ namespace stud_bud_back.Services
 			return user;
 		}
 
-		public User Create(User user, string password)
+		public async Task<User> Create(User user, string password)
 		{
 			if (string.IsNullOrWhiteSpace(password))
 				throw new AppException("Password is required");
@@ -56,32 +54,13 @@ namespace stud_bud_back.Services
 			user.PasswordHash = passwordHash;
 			user.PasswordSalt = passwordSalt;
 
-			_context.Users.Add(user);
-			_context.SaveChanges();
+			await _context.Users.AddAsync(user);
+			await _context.SaveChangesAsync();
 
 			return user;
 		}
 
-		public void Delete(int id)
-		{
-			var user = _context.Users.Find(id);
-
-			_context.Users.Remove(user);
-			_context.SaveChanges();
-
-		}
-
-		public IEnumerable<User> GetAll()
-		{
-			return _context.Users;
-		}
-
-		public User GetById(int id)
-		{
-			return _context.Users.Find(id);
-		}
-
-		public void Update(User userParam, string password = null)
+		public async Task<User> Update(User userParam, string password = null)
 		{
 			var user = _context.Users.Find(userParam.Id);
 
@@ -105,7 +84,9 @@ namespace stud_bud_back.Services
 			user.PasswordSalt = passwordSalt;
 
 			_context.Users.Update(user);
-			_context.SaveChanges();
+			await _context.SaveChangesAsync();
+
+			return user;
 		}
 
 		private static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)

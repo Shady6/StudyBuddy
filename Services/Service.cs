@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using stud_bud_back.Helpers;
 using System;
 using System.Collections.Generic;
@@ -9,10 +10,11 @@ namespace stud_bud_back.Services
 {
 	public interface IService<T> where T : class
 	{
-		public Task<int> Create(T entity);
+		public Task<T> Create(T entity);
 		public Task<int> Delete(int id);
 		public Task<IEnumerable<T>> GetAll();
-		public Task<T> Get(int id);
+		public Task<T> GetById(int id);
+		public Task<bool> Exists(int id);
 	}
 
 
@@ -25,36 +27,37 @@ namespace stud_bud_back.Services
 			_context = context;
 		}
 
-		public async Task<int> Create(T entity)
+		public virtual async Task<T> Create(T entity)
 		{
 			_context.Set<T>().Add(entity);
-			return await _context.SaveChangesAsync();
+			await _context.SaveChangesAsync();
+			return entity;
 		}
 
-		public async Task<int> Delete(int id)
+		public virtual async Task<int> Delete(int id)
 		{
-			T foundEntity = _context.Set<T>().Find(id);
+			T foundEntity = await GetById(id);
 
 			if (foundEntity == null)
-				throw new AppException("The " + typeof(T).Name.ToLower() + " you're trying to delete doesn't exist");
+				throw new AppException($"The {typeof(T)} you're trying to delete doesn't exist");
 
 			_context.Set<T>().Remove(foundEntity);
 			return await _context.SaveChangesAsync();
 		}
 
-		public async Task<IEnumerable<T>> GetAll()
+		public virtual async Task<IEnumerable<T>> GetAll()
 		{
 			return await _context.Set<T>().ToListAsync();
 		}
 
-		public async Task<T> Get(int id)
+		public virtual async Task<T> GetById(int id)
 		{
-			T foundEntity = await _context.Set<T>().FindAsync(id);
+			return await _context.Set<T>().FindAsync(id);
+		}
 
-			if (foundEntity == null)
-				throw new AppException("The " + typeof(T).Name.ToLower() + " you're trying to find doesn't exist");
-
-			return foundEntity;
+		public virtual async Task<bool> Exists(int id)
+		{
+			return await _context.Set<T>().FindAsync(id) != null;
 		}
 	}
 }

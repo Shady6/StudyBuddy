@@ -10,29 +10,75 @@ namespace stud_bud_back.Services
 {
 	public interface ICohortService : IService<Cohort>
 	{
-		public Cohort UpdateCohortName(string name, int id);
+		public Task<Cohort> UpdateCohortName(string name, int cohortId, int userId);
+		new public Task<Cohort> Create(Cohort cohort);
+		public Task<bool> IsUserAdmin(int cohortId, int userId);
+		public Task<bool> IsUserModerator(int cohortId, int userId);
+		public Task<bool> IsUserAtLeastModerator(int cohortId, int userId);
 	}
 
 	public class CohortService : Service<Cohort>, ICohortService
 	{
-		public CohortService(DataContext context) : base(context) { }
+		private readonly IUserService _userService;
 
-		public Cohort UpdateCohortName(string name, int id)
+		public CohortService(DataContext context, IUserService userService) : base(context)
 		{
-			var cohort = _context.Cohorts.Find(id);
-
-			if (cohort == null)
-				throw new AppException("The cohort you're trying to update doesn't exist");
-
-			cohort.Name = name;
-			_context.SaveChanges();
-
-			return cohort;
+			_userService = userService;
 		}
 
-		public void gg()
+		public override async Task<Cohort> Create(Cohort cohort)
 		{
-			//_context.Cohorts.Find(1).Assignments.Add(new Assignment());
+			if (await _userService.Exists((int)cohort.AdminId))
+			{
+				await _context.Cohorts.AddAsync(cohort);
+				await _context.SaveChangesAsync();
+				return cohort;
+			}
+			throw new AppException("Something went wrong");
+		}
+
+		public async Task<Cohort> UpdateCohortName(string name, int cohortId, int userId)
+		{
+			var cohort = await GetById(cohortId);
+
+			if (cohort != null && cohort.AdminId == userId) 
+			{
+				cohort.Name = name;
+				await _context.SaveChangesAsync();
+				return cohort;
+			}
+
+			throw new AppException("Something went wrong");
+		}
+
+		public async Task<bool> IsUserAdmin(int cohortId, int userId)
+		{
+			Cohort foundCohort = await GetById(cohortId);
+
+			if (foundCohort != null)
+				return foundCohort.AdminId == userId;
+
+			throw new AppException("Something went wrong");
+		}
+
+		public async Task<bool> IsUserModerator(int cohortId, int userId)
+		{
+			Cohort foundCohort = await GetById(cohortId);
+
+			if (foundCohort != null)
+				return foundCohort.CohortModerator.Any(cm => cm.UserId == userId);
+
+			throw new AppException("Something went wrong");
+		}
+
+		public async Task<bool> IsUserAtLeastModerator(int cohortId, int userId) 
+		{
+			Cohort foundCohort = await GetById(cohortId);
+
+			if (foundCohort != null)
+				return foundCohort.AdminId == userId || foundCohort.CohortModerator.Any(cm => cm.UserId == userId);
+
+			throw new AppException("Something went wrong");
 		}
 	}
 }
